@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TaipeiFlowOfPeople</name>
+    </assembly>
+    <members>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get">
+            <summary>
+            取得各景點人潮紅綠燈
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get(System.Int32)">
+            <summary>
+            取得指定 id 的景點人潮紅綠燈
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetJsonContent(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="Url"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
