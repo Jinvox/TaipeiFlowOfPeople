@@ -3,4 +3,5 @@
 ################################################################################
 
 /TaipeiFlowOfPeople/bin/Debug
-/TaipeiFlowOfPeople/bin/object
+/TaipeiFlowOfPeople/obj
+/.vs

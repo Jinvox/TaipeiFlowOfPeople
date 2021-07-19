@@ -93,6 +93,11 @@ CREATE TABLE Attraction (
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Url"></param>
+        /// <returns></returns>
         private string GetJsonContent(string Url)
         {
             string targetURI = Url;
