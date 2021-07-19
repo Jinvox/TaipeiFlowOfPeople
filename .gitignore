@@ -2,6 +2,7 @@
 # 這個 .gitignore 檔案由 Microsoft(R) Visual Studio 自動建立。
 ################################################################################
 
-/TaipeiFlowOfPeople/bin/Debug
+/TaipeiFlowOfPeople/bin
 /TaipeiFlowOfPeople/obj
 /.vs
+/TaipeiFlowOfPeople/TaipeiFlowOfPeople.csproj.user
