@@ -6,6 +6,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeople\TaipeiFlowOfPeople.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
