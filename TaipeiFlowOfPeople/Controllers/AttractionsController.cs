@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -12,6 +13,10 @@ using TaipeiFlowOfPeople.Model;
 
 namespace TaipeiFlowOfPeople.Controllers
 {
+    /// <summary>
+    /// 景點人潮
+    /// </summary>
+    [EnableCors("Policy1")]
     [Route("api/[controller]")]
     [ApiController]
     public class AttractionsController : ControllerBase
@@ -20,6 +25,10 @@ namespace TaipeiFlowOfPeople.Controllers
         static string cnStr = $"data source={dbPath}";
 
         // GET: api/<AttractionsController>
+        /// <summary>
+        /// 取得所有景點人潮資料
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<Attraction> Get()
         {
@@ -33,6 +42,11 @@ namespace TaipeiFlowOfPeople.Controllers
         }
 
         // GET api/<AttractionsController>/5
+        /// <summary>
+        /// 取得指定 id 的景點人朝資料
+        /// </summary>
+        /// <param name="id">指定 id</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public Attraction Get(int id)
         {

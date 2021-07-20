@@ -4,6 +4,24 @@
         <name>TaipeiFlowOfPeople</name>
     </assembly>
     <members>
+        <member name="T:TaipeiFlowOfPeople.Controllers.AttractionsController">
+            <summary>
+            景點人潮
+            </summary>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get">
+            <summary>
+            取得所有景點人潮資料
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get(System.Int32)">
+            <summary>
+            取得指定 id 的景點人朝資料
+            </summary>
+            <param name="id">指定 id</param>
+            <returns></returns>
+        </member>
         <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetJsonContent(System.String)">
             <summary>
             
