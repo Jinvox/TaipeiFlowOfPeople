@@ -20,4 +20,10 @@
     <Folder Include="SQLlite\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TaipeiFlowOfPeople.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

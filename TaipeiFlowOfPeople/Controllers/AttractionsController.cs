@@ -16,14 +16,15 @@ namespace TaipeiFlowOfPeople.Controllers
     [ApiController]
     public class AttractionsController : ControllerBase
     {
-        string dbPath = "./SQLlite/db.sqlite";
-        string cnStr = $"data source=./SQLlite/db.sqlite";
+        static string dbPath = $"{AppDomain.CurrentDomain.BaseDirectory}SQLlite/db.sqlite";
+        static string cnStr = $"data source={dbPath}";
 
         // GET: api/<AttractionsController>
         [HttpGet]
         public IEnumerable<Attraction> Get()
         {
             this.InitSQLiteDb();
+            Console.WriteLine($"Connect to {cnStr}");
             using (var cn = new SQLiteConnection(cnStr))
             {
                 var list = cn.Query<Attraction>("SELECT * FROM Attraction");
@@ -36,6 +37,7 @@ namespace TaipeiFlowOfPeople.Controllers
         public Attraction Get(int id)
         {
             this.InitSQLiteDb();
+            Console.WriteLine($"Connect to {cnStr}");
             using (var cn = new SQLiteConnection(cnStr))
             {
                 var parameters = new
@@ -67,8 +69,22 @@ namespace TaipeiFlowOfPeople.Controllers
 
         private void InitSQLiteDb()
         {
-            if (System.IO.File.Exists(dbPath)) 
-                return;
+            if (System.IO.File.Exists(dbPath))
+            {
+                using(var cn = new SQLiteConnection(cnStr))
+                {
+                    var table = cn.QueryFirstOrDefault($"SELECT * FROM sqlite_master WHERE type = 'table' and name = 'Attraction'");
+                    if (table != null)
+                        return;
+                }
+            }
+            string path = Path.GetDirectoryName(dbPath);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                Console.WriteLine($"Create Folder to {path}");
+            }
+            Console.WriteLine($"Connect to {cnStr}");
             using (var cn = new SQLiteConnection(cnStr))
             {
                 cn.Execute(@"
@@ -99,7 +115,7 @@ CREATE TABLE Attraction (
         /// <param name="Url"></param>
         /// <returns></returns>
         private string GetJsonContent(string Url)
-        {
+        { 
             string targetURI = Url;
             var request = System.Net.WebRequest.Create(targetURI);
             request.ContentType = "application/json; charset=utf-8";
