@@ -4,6 +4,10 @@
 
 /TaipeiFlowOfPeople/bin
 /TaipeiFlowOfPeople/obj
+/TaipeiFlowOfPeopleEngine/bin
+/TaipeiFlowOfPeopleEngine/obj
+/TaipeiFlowOfPeopleModel/bin
+/TaipeiFlowOfPeopleModel/obj
 /.vs
 /TaipeiFlowOfPeople/TaipeiFlowOfPeople.csproj.user
 *.user
