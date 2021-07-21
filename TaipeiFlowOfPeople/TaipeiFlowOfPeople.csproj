@@ -13,13 +13,19 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Model\" />
     <Folder Include="SQLlite\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaipeiFlowOfPeopleModel\TaipeiFlowOfPeopleModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

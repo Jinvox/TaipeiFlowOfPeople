@@ -43,6 +43,7 @@ namespace TaipeiFlowOfPeople
                 var xmlPath = Path.Combine(basePath, "TaipeiFlowOfPeople.xml");
                 c.IncludeXmlComments(xmlPath);
             });
+            services.AddScoped<TaipeiFlowOfPeopleModel.TaipeiFlowOfPeopleContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

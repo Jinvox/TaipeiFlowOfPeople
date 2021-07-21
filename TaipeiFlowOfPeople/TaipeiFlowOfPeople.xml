@@ -22,12 +22,10 @@
             <param name="id">指定 id</param>
             <returns></returns>
         </member>
-        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetJsonContent(System.String)">
+        <member name="T:TaipeiFlowOfPeople.Controllers.DBController">
             <summary>
-            
+            景點人潮
             </summary>
-            <param name="Url"></param>
-            <returns></returns>
         </member>
     </members>
 </doc>

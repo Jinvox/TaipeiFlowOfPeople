@@ -1,0 +1,12 @@
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\bin\Debug\net5.0\TaipeiFlowOfPeopleModel.deps.json
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\bin\Debug\net5.0\TaipeiFlowOfPeopleModel.dll
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\bin\Debug\net5.0\ref\TaipeiFlowOfPeopleModel.dll
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\bin\Debug\net5.0\TaipeiFlowOfPeopleModel.pdb
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.csproj.AssemblyReference.cache
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.GeneratedMSBuildEditorConfig.editorconfig
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.AssemblyInfoInputs.cache
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.AssemblyInfo.cs
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.csproj.CoreCompileInputs.cache
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.dll
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\ref\TaipeiFlowOfPeopleModel.dll
+C:\Code\Foxconn\TaipeiFlowOfPeople\TaipeiFlowOfPeopleModel\obj\Debug\net5.0\TaipeiFlowOfPeopleModel.pdb

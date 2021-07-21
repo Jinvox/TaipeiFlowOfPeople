@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using TaipeiFlowOfPeople.Model;
+using TaipeiFlowOfPeopleModel;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TaipeiFlowOfPeople.Controllers
@@ -21,23 +22,31 @@ namespace TaipeiFlowOfPeople.Controllers
     [ApiController]
     public class AttractionsController : ControllerBase
     {
-        static string dbPath = $"{AppDomain.CurrentDomain.BaseDirectory}SQLlite/db.sqlite";
-        static string cnStr = $"data source={dbPath}";
+        private string dbPath { get; set; }
+        private string cnStr { get; set; }
+        private IConfiguration config;
+        public AttractionsController(IConfiguration configuration)
+        {
+            dbPath = $"{AppDomain.CurrentDomain.BaseDirectory}SQLlite/db.sqlite";
+            cnStr = $"data source={dbPath}";
+            config = configuration;
+        }
+    
 
-        // GET: api/<AttractionsController>
-        /// <summary>
-        /// 取得所有景點人潮資料
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
+    // GET: api/<AttractionsController>
+    /// <summary>
+    /// 取得所有景點人潮資料
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
         public IEnumerable<Attraction> Get()
         {
-            this.InitSQLiteDb();
+            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
             Console.WriteLine($"Connect to {cnStr}");
-            using (var cn = new SQLiteConnection(cnStr))
+            using (var context = new TaipeiFlowOfPeopleContext(config))
             {
-                var list = cn.Query<Attraction>("SELECT * FROM Attraction");
-                return list;
+                var entities = context.Attraction.ToList();
+                return entities;
             }
         }
 
@@ -50,15 +59,11 @@ namespace TaipeiFlowOfPeople.Controllers
         [HttpGet("{id}")]
         public Attraction Get(int id)
         {
-            this.InitSQLiteDb();
+            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
             Console.WriteLine($"Connect to {cnStr}");
-            using (var cn = new SQLiteConnection(cnStr))
+            using (var context = new TaipeiFlowOfPeopleContext(config))
             {
-                var parameters = new
-                {
-                    id = id
-                };
-                var entity = cn.Query<Attraction>("SELECT * FROM Attraction WHERE id = @id", parameters).FirstOrDefault();
+                var entity = context.Attraction.Where(x=>x.id == id).FirstOrDefault();
                 return entity;
             }
         }
@@ -80,66 +85,5 @@ namespace TaipeiFlowOfPeople.Controllers
         //public void Delete(int id)
         //{
         //}
-
-        private void InitSQLiteDb()
-        {
-            if (System.IO.File.Exists(dbPath))
-            {
-                using(var cn = new SQLiteConnection(cnStr))
-                {
-                    var table = cn.QueryFirstOrDefault($"SELECT * FROM sqlite_master WHERE type = 'table' and name = 'Attraction'");
-                    if (table != null)
-                        return;
-                }
-            }
-            string path = Path.GetDirectoryName(dbPath);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-                Console.WriteLine($"Create Folder to {path}");
-            }
-            Console.WriteLine($"Connect to {cnStr}");
-            using (var cn = new SQLiteConnection(cnStr))
-            {
-                cn.Execute(@"
-CREATE TABLE Attraction (
-    id INTEGER,
-    name NVARCHAR(50),
-    district NVARCHAR(50),
-    level INTEGER,
-    nlat REAL,
-    elong REAL,
-    cover NVARCHAR(100),
-    update_time NVARCHAR(50),
-    CONSTRAINT Attraction_PK PRIMARY KEY (id)
-)");
-                string json = GetJsonContent("https://travel.taipei/api/zh-tw/crowd/spots");
-                Spots spots = Newtonsoft.Json.JsonConvert.DeserializeObject<Spots>(json);
-                cn.Execute("DELETE FROM Attraction");
-                //參數是用@paramName
-                var insertScript =
-                    "INSERT INTO Attraction VALUES (@id, @name, @district, @level, @nlat, @elong, @cover, @update_time)";
-                cn.Execute(insertScript, spots.data);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Url"></param>
-        /// <returns></returns>
-        private string GetJsonContent(string Url)
-        { 
-            string targetURI = Url;
-            var request = System.Net.WebRequest.Create(targetURI);
-            request.ContentType = "application/json; charset=utf-8";
-            var response = request.GetResponse();
-            string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
-            }
-            return text;
-        }
     }
 }
