@@ -1,8 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "C:\\Users\\jinvo\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\jinvo\\.nuget\\packages"
-    ]
-  }
-}
