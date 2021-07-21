@@ -26,7 +26,6 @@ namespace TaipeiFlowOfPeople.Controllers
             this.InitSQLiteDb();
             //using (var cn = new SQLiteConnection(cnStr))
             //{
-
             //    var list = cn.Query<MetroStation>("SELECT * FROM MetroStation ;");
             //    return list;
             //}
@@ -50,16 +49,6 @@ namespace TaipeiFlowOfPeople.Controllers
                             myObject = new MetroStation();
                             mysn = new StationName();
                             mysp = new StationPosition();
-
-                            //[StationUID],[StationID],[StationAddress],
-                            //[BikeAllowOnHoliday],[SrcUpdateTime],[UpdateTime]
-                            //,[VersionID],[LocationCity],[LocationCityCode]
-                            //,[LocationTown],[LocationTownCode]
-                            //,[Zh_tw] as 'StationName.Zh_tw'
-                            //,[En] as 'StationName.En'
-                            //,[PositionLon] as 'StationPosition.PositionLon'
-                            //,[PositionLat] as 'StationPosition.PositionLat'
-                            //,[GeoHash] as 'StationPosition.GeoHash'
 
                             myObject.StationUID = reader["StationUID"].ToString();
                             myObject.StationID = reader["StationID"].ToString();
@@ -87,16 +76,13 @@ namespace TaipeiFlowOfPeople.Controllers
                     return myObjectList;
                 }
             }
-
-
-
         }
 
         // GET api/<MetroStationController>/5
         [HttpGet("{StationUID}")]
         public MetroStation Get(int StationUID)
         {
-            this.InitSQLiteDb();
+            //this.InitSQLiteDb();
             using (var cn = new SQLiteConnection(cnStr))
             {
                 var parameters = new
@@ -132,57 +118,7 @@ namespace TaipeiFlowOfPeople.Controllers
             //    return;
             using (var cn = new SQLiteConnection(cnStr))
             {
-
-                /* public string StationUID
-         public string StationID
-         public StationName StationName
-         public string StationAddress
-         public bool BikeAllowOnHoliday
-         public DateTime SrcUpdateTime
-         public DateTime UpdateTime
-         public int VersionID
-         public StationPosition StationPosition
-         public string LocationCity
-         public string LocationCityCode
-         public string LocationTown
-         public string LocationTownCode*/
-
                 cn.Execute("drop table if exists  MetroStation");
-                //cn.Execute("drop table if exists StationName");
-                //cn.Execute("drop table if exists StationPosition");
-
-                //    cn.Execute(@"
-                //CREATE TABLE MetroStation (
-                //    StationUID NVARCHAR(30),
-                //    StationID NVARCHAR(20),
-                //    StationAddress NVARCHAR(100),
-                //    BikeAllowOnHoliday REAL,
-                //    SrcUpdateTime NVARCHAR(50),
-                //    UpdateTime NVARCHAR(50),
-                //    VersionID INTEGER,
-                //    LocationCity NVARCHAR(10),
-                //    LocationCityCode NVARCHAR(10),
-                //    LocationTown NVARCHAR(10),
-                //    LocationTownCode NVARCHAR(10),
-                //    CONSTRAINT MetroStation_PK PRIMARY KEY (StationUID)
-                //)");
-
-                //                cn.Execute(@"
-                //CREATE TABLE StationName (
-                //    StationUID NVARCHAR(30),
-                //    Zh_tw NVARCHAR(20),
-                //    En NVARCHAR(20),
-                //    CONSTRAINT MetroStation_PK PRIMARY KEY (StationUID)
-                //)");
-
-                //                cn.Execute(@"
-                //CREATE TABLE StationPosition (
-                //    StationUID NVARCHAR(30),
-                //    PositionLon REAL,
-                //    GeoHash REAL,
-                //    CONSTRAINT MetroStation_PK PRIMARY KEY (StationUID)
-                //)");
-
 
                 cn.Execute(@"
             CREATE TABLE MetroStation (
@@ -205,20 +141,8 @@ namespace TaipeiFlowOfPeople.Controllers
                 CONSTRAINT MetroStation_PK PRIMARY KEY (StationUID)
             )");
 
-                /*    cn.Execute(@"
-    CREATE TABLE MetroStation(
-        id INTEGER,
-        name NVARCHAR(50),
-        district NVARCHAR(50),
-        level INTEGER,
-        nlat REAL,
-        elong REAL,
-        cover NVARCHAR(100),
-        update_time NVARCHAR(50),
-        CONSTRAINT MetroStation_PK PRIMARY KEY (id)
-    )");*/
-                string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC?$top=2&$format=JSON");
-                //string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC");
+                //string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC?$top=2&$format=JSON");
+                string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC?$format=JSON");
                 Trtc trtcs = Newtonsoft.Json.JsonConvert.DeserializeObject<Trtc>(json);
 
                 ////參數是用@paramname
@@ -226,26 +150,6 @@ namespace TaipeiFlowOfPeople.Controllers
                 //cn.Execute(insertscript, trtcs.data);
 
                 manipulate(insertscript, trtcs.data);
-
-            //    cn.Execute(@"
-            //CREATE TABLE MetroStation (
-            //    StationUID NVARCHAR(30),
-            //    StationID NVARCHAR(20),
-            //    StationAddress NVARCHAR(100),
-            //    BikeAllowOnHoliday REAL,
-            //    SrcUpdateTime NVARCHAR(50),
-            //    UpdateTime NVARCHAR(50),
-            //    VersionID INTEGER,
-            //    LocationCity NVARCHAR(10),
-            //    LocationCityCode NVARCHAR(10),
-            //    LocationTown NVARCHAR(10),
-            //    LocationTownCode NVARCHAR(10),
-            //    Zh_tw NVARCHAR(20),
-            //    En NVARCHAR(20),
-            //    PositionLon REAL,
-            //    GeoHash REAL,
-            //    CONSTRAINT MetroStation_PK PRIMARY KEY (StationUID)
-            //)");
             }
         }
 
@@ -260,11 +164,7 @@ namespace TaipeiFlowOfPeople.Controllers
                         foreach (MetroStation mst in data)
                         {
                             command.Parameters.Clear();
-                            //var insertscript = "insert into MetroStation values
-                            //(@StationUID, @StationID, @StationAddress, @BikeAllowOnHoliday,
-                            //@SrcUpdateTime, @UpdateTime, @VersionID, @LocationCity,
-                            //@LocationCityCode,@LocationTown,@LocationTownCode,@Zh_tw,@En,
-                            //@PositionLon,@GeoHash)";
+
                             command.Parameters.AddWithValue("@StationUID", mst.StationUID);
                             command.Parameters.AddWithValue("@StationID", mst.StationID);
                             command.Parameters.AddWithValue("@StationAddress", mst.StationAddress);
@@ -285,7 +185,6 @@ namespace TaipeiFlowOfPeople.Controllers
                             command.Parameters.AddWithValue("@PositionLat", mst.StationPosition.PositionLat);
                             command.Parameters.AddWithValue("@GeoHash", mst.StationPosition.GeoHash);
 
-                            
                             int result = command.ExecuteNonQuery();
 
                             // Check Error
@@ -293,44 +192,13 @@ namespace TaipeiFlowOfPeople.Controllers
                                 Console.WriteLine("Error inserting data into Database!");
                         }
                 }
-                
             }
-
-                
-
-            //using (var cn = new SQLiteConnection(cnStr))
-            //{
-            //    var command = new SQLiteCommand(sqlManipulate, cn);
-            //    var mySqlTransaction = cn.BeginTransaction();
-
-            //    try
-            //    {
-            //        command.Transaction = mySqlTransaction;
-            //        command.ExecuteNonQuery();
-            //        mySqlTransaction.Commit();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        mySqlTransaction.Rollback();
-            //        Console.WriteLine(ex.Message);
-            //    }
-            //}
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Url"></param>
-        /// <returns></returns>
+
         private string GetJsonContent(string Url)
         {
             string targetURI = Url;
-            //HttpWebRequest webrequest = (HttpWebRequest)HttpWebRequest.Create(targetURI);
-            //request.ContentType = "application/json; charset=utf-8";
-            //webrequest.Accept = "application/json";
-            //webrequest.ContentType = "application/json";
-            //HttpWebResponse response = (HttpWebResponse)webrequest.GetResponse();
-
             var request = System.Net.WebRequest.Create(targetURI);
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
             request.Headers.Add("Host", "ptx.transportdata.tw");
@@ -346,7 +214,5 @@ namespace TaipeiFlowOfPeople.Controllers
 
             return text;
         }
-
-
     }
 }

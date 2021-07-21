@@ -28,7 +28,6 @@ namespace TaipeiFlowOfPeople.Controllers
             this.InitSQLiteDb();
             //using (var cn = new SQLiteConnection(cnStr))
             //{
-
             //    var list = cn.Query<BusStop>("SELECT * FROM BusStop ;");
             //    return list;
             //}
@@ -53,22 +52,6 @@ namespace TaipeiFlowOfPeople.Controllers
                             mysn = new StopName();
                             mysp = new StopPosition();
 
-        //                   public string StopUID
-        //public string StopID
-        //public string AuthorityID
-
-        //public StopName StopName
-        //public StopPosition StopPosition
-        
-                            //public string StopAddress
-        //public string Bearing
-        //public string StationID
-        //public string City
-        //public string CityCode
-        //public string LocationCityCode
-        //public DateTime UpdateTime
-        //public int VersionID
-
                             myObject.StopUID = reader["StopUID"].ToString();
                             myObject.StopID = reader["StopID"].ToString();
                             myObject.AuthorityID = reader["AuthorityID"].ToString();
@@ -86,20 +69,16 @@ namespace TaipeiFlowOfPeople.Controllers
                             mysp.PositionLon = float.Parse(reader["PositionLon"].ToString());
                             mysp.PositionLat = float.Parse(reader["PositionLat"].ToString());
                             mysp.GeoHash = reader["GeoHash"].ToString();
+
                             myObject.StopPosition = mysp;
                             myObject.StopName = mysn;
                             myObjectList.Add(myObject);
-                            //public StopName StopName
-                            //public StopPosition StopPosition
                         }
                     }
                     //var JsonResult = JsonConvert.SerializeObject(myObjectList);
                     return myObjectList;
                 }
             }
-
-
-
         }
 
         // GET api/<BusStopController>/5
@@ -142,69 +121,7 @@ namespace TaipeiFlowOfPeople.Controllers
             //    return;
             using (var cn = new SQLiteConnection(cnStr))
             {
-
-                /* public string StationUID
-         public string StationID
-         public StationName StationName
-         public string StationAddress
-         public bool BikeAllowOnHoliday
-         public DateTime SrcUpdateTime
-         public DateTime UpdateTime
-         public int VersionID
-         public StationPosition StationPosition
-         public string LocationCity
-         public string LocationCityCode
-         public string LocationTown
-         public string LocationTownCode*/
-
                 cn.Execute("drop table if exists  BusStop");
-                //cn.Execute("drop table if exists StopName");
-                //cn.Execute("drop table if exists StopPosition");
-
-                //    cn.Execute(@"
-                //CREATE TABLE BusStop (
-                //    StationUID NVARCHAR(30),
-                //    StationID NVARCHAR(20),
-                //    StationAddress NVARCHAR(100),
-                //    BikeAllowOnHoliday REAL,
-                //    SrcUpdateTime NVARCHAR(50),
-                //    UpdateTime NVARCHAR(50),
-                //    VersionID INTEGER,
-                //    LocationCity NVARCHAR(10),
-                //    LocationCityCode NVARCHAR(10),
-                //    LocationTown NVARCHAR(10),
-                //    LocationTownCode NVARCHAR(10),
-                //    CONSTRAINT BusStop PRIMARY KEY (StationUID)
-                //)");
-
-                //                cn.Execute(@"
-                //CREATE TABLE StationName (
-                //    StationUID NVARCHAR(30),
-                //    Zh_tw NVARCHAR(20),
-                //    En NVARCHAR(20),
-                //    CONSTRAINT BusStop_PK PRIMARY KEY (StationUID)
-                //)");
-
-                //                cn.Execute(@"
-                //CREATE TABLE StationPosition (
-                //    StationUID NVARCHAR(30),
-                //    PositionLon REAL,
-                //    GeoHash REAL,
-                //    CONSTRAINT BusStop_PK PRIMARY KEY (StationUID)
-                //)");
-//public string StopUID
-//        public string StopID
-//        public string AuthorityID
-//        public StopName StopName
-//        public StopPosition StopPosition
-//        public string StopAddress
-//        public string Bearing
-//        public string StationID
-//        public string City
-//        public string CityCode
-//        public string LocationCityCode
-//        public DateTime UpdateTime
-//        public int VersionID
 
                 cn.Execute(@"
             CREATE TABLE BusStop (
@@ -229,20 +146,8 @@ namespace TaipeiFlowOfPeople.Controllers
                 CONSTRAINT BusStop_PK PRIMARY KEY (StopUID)
             )");
 
-                /*    cn.Execute(@"
-    CREATE TABLE BusStop(
-        id INTEGER,
-        name NVARCHAR(50),
-        district NVARCHAR(50),
-        level INTEGER,
-        nlat REAL,
-        elong REAL,
-        cover NVARCHAR(100),
-        update_time NVARCHAR(50),
-        CONSTRAINT BusStop_PK PRIMARY KEY (id)
-    )");*/
-                string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Bus/Stop/City/Taipei?$top=2&$format=JSON");
-                //string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC");
+                string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Bus/Stop/City/Taipei?$top=10&$format=JSON");
+                //string json = GetJsonContent("https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/Station/TRTC?&$format=JSON");
                 Bsct bscts = Newtonsoft.Json.JsonConvert.DeserializeObject<Bsct>(json);
 
                 ////參數是用@paramname
@@ -250,26 +155,6 @@ namespace TaipeiFlowOfPeople.Controllers
                 //cn.Execute(insertscript, trtcs.data);
 
                 manipulate(insertscript, bscts.data);
-
-                //    cn.Execute(@"
-                //CREATE TABLE BusStop (
-                //    StationUID NVARCHAR(30),
-                //    StationID NVARCHAR(20),
-                //    StationAddress NVARCHAR(100),
-                //    BikeAllowOnHoliday REAL,
-                //    SrcUpdateTime NVARCHAR(50),
-                //    UpdateTime NVARCHAR(50),
-                //    VersionID INTEGER,
-                //    LocationCity NVARCHAR(10),
-                //    LocationCityCode NVARCHAR(10),
-                //    LocationTown NVARCHAR(10),
-                //    LocationTownCode NVARCHAR(10),
-                //    Zh_tw NVARCHAR(20),
-                //    En NVARCHAR(20),
-                //    PositionLon REAL,
-                //    GeoHash REAL,
-                //    CONSTRAINT BusStop_PK PRIMARY KEY (StationUID)
-                //)");
             }
         }
 
@@ -284,10 +169,6 @@ namespace TaipeiFlowOfPeople.Controllers
                     foreach (BusStop mst in data)
                     {
                         command.Parameters.Clear();
-                        //insert into BusStop values(@StopUID, @StopID, @AuthorityID, @StopName, @StopPosition,
-                        //@StopAddress, @VersionID, @Bearing, @StationID, @City, @CityCode,
-                        //@LocationCityCode, @UpdateTime, @Zh_tw, @En, @PositionLon, @PositionLat, @GeoHash)
-
                         command.Parameters.AddWithValue("@StopUID", mst.StopUID);
                         command.Parameters.AddWithValue("@StopID", mst.StopID);
                         command.Parameters.AddWithValue("@AuthorityID", mst.AuthorityID);
@@ -310,52 +191,19 @@ namespace TaipeiFlowOfPeople.Controllers
                         command.Parameters.AddWithValue("@PositionLat", mst.StopPosition.PositionLat);
                         command.Parameters.AddWithValue("@GeoHash", mst.StopPosition.GeoHash);
 
-
                         int result = command.ExecuteNonQuery();
 
                         // Check Error
                         if (result < 0)
-                            Console.WriteLine("Error inserting data into Database!");
+                            Console.WriteLine("Error inserting data into BusStop Database!");
                     }
                 }
-
             }
-
-
-
-            //using (var cn = new SQLiteConnection(cnStr))
-            //{
-            //    var command = new SQLiteCommand(sqlManipulate, cn);
-            //    var mySqlTransaction = cn.BeginTransaction();
-
-            //    try
-            //    {
-            //        command.Transaction = mySqlTransaction;
-            //        command.ExecuteNonQuery();
-            //        mySqlTransaction.Commit();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        mySqlTransaction.Rollback();
-            //        Console.WriteLine(ex.Message);
-            //    }
-            //}
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Url"></param>
-        /// <returns></returns>
         private string GetJsonContent(string Url)
         {
             string targetURI = Url;
-            //HttpWebRequest webrequest = (HttpWebRequest)HttpWebRequest.Create(targetURI);
-            //request.ContentType = "application/json; charset=utf-8";
-            //webrequest.Accept = "application/json";
-            //webrequest.ContentType = "application/json";
-            //HttpWebResponse response = (HttpWebResponse)webrequest.GetResponse();
-
             var request = System.Net.WebRequest.Create(targetURI);
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
             request.Headers.Add("Host", "ptx.transportdata.tw");
