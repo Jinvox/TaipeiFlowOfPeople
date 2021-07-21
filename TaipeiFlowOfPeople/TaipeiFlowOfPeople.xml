@@ -11,41 +11,122 @@
         </member>
         <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get">
             <summary>
-            取得所有景點人潮資料
+            取得所有景點人潮資料，最多200筆
             </summary>
             <returns></returns>
         </member>
         <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get(System.Int32)">
             <summary>
-            取得指定 id 的景點人朝資料
+            取得指定編號的景點人朝資料
             </summary>
-            <param name="id">指定 id</param>
+            <param name="id">唯一識別編號</param>
             <returns></returns>
         </member>
-        <member name="M:TaipeiFlowOfPeople.Controllers.BusStopsController.GetJsonContent(System.String)">
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get(System.String)">
             <summary>
-            
+            以名稱或行政區模糊搜索景點
             </summary>
-            <param name="Url"></param>
+            <param name="nameOrDistrict">名稱或行政區</param>
             <returns></returns>
         </member>
-        <member name="T:TaipeiFlowOfPeople.Controllers.DBController">
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetByName(System.String)">
             <summary>
-            景點人潮
+            以名稱過濾景點
             </summary>
-        </member>
-        <member name="M:TaipeiFlowOfPeople.Controllers.MetroStationController.GetJsonContent(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="Url"></param>
+            <param name="name">名稱</param>
             <returns></returns>
         </member>
-        <member name="M:TaipeiFlowOfPeople.Controllers.YouBikeTPController.GetJsonContent(System.String)">
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetByDistrict(System.String)">
             <summary>
-            
+            以行政區過濾景點
             </summary>
-            <param name="Url"></param>
+            <param name="district">行政區</param>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetByLevel(System.Int32)">
+            <summary>
+            以人潮等級過濾景點
+            </summary>
+            <param name="level">人潮等級</param>
+            <returns></returns>
+        </member>
+        <member name="T:TaipeiFlowOfPeople.Controllers.BusStopsController">
+            <summary>
+            公車站
+            </summary>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.BusStopsController.Get">
+            <summary>
+            取得前200筆公車站牌資料
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.BusStopsController.Get(System.String)">
+            <summary>
+            取得指定公車站資料
+            </summary>
+            <param name="stopUID">唯一識別碼</param>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.BusStopsController.Get(System.Nullable{System.Single},System.Nullable{System.Single},System.Nullable{System.Single},System.Nullable{System.Single})">
+            <summary>
+            依據指定的座標和範圍取得公車站資料，最多 200 筆
+            </summary>
+            <param name="positionLon">經度位置</param>
+            <param name="positionLat">緯度位置</param>
+            <param name="rangeLon">經度範圍</param>
+            <param name="rangeLat">緯度範圍</param>
+            <returns></returns>
+        </member>
+        <member name="T:TaipeiFlowOfPeople.Controllers.MetroStationController">
+            <summary>
+            捷运站
+            </summary>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.MetroStationController.Get">
+            <summary>
+            取得前两百比捷运站资料
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.MetroStationController.Get(System.String)">
+            <summary>
+            取得指定捷運站資料
+            </summary>
+            <param name="stationUID">唯一識別碼</param>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.MetroStationController.Get(System.Nullable{System.Single},System.Nullable{System.Single},System.Nullable{System.Single},System.Nullable{System.Single})">
+            <summary>
+            依據指定的座標和範圍取得捷運站資料，最多 200 筆
+            </summary>
+            <param name="positionLon">經度位置</param>
+            <param name="positionLat">緯度位置</param>
+            <param name="rangeLon">經度範圍</param>
+            <param name="rangeLat">緯度範圍</param>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.YouBikeTPController.Get">
+            <summary>
+            取得所有 YouBike 站點，最多200筆
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.YouBikeTPController.Get(System.String)">
+            <summary>
+            以編號 sno 取得指定 YouBike 站點
+            </summary>
+            <param name="sno">唯一識別碼</param>
+            <returns></returns>
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.YouBikeTPController.GetByPosition(System.Nullable{System.Single},System.Nullable{System.Single},System.Nullable{System.Single},System.Nullable{System.Single})">
+            <summary>
+            以經緯度查找 YouBike 站點
+            </summary>
+            <param name="positionLng">經度位置</param>
+            <param name="positionLat">緯度位置</param>
+            <param name="rangeLng">經度範圍</param>
+            <param name="rangeLat">緯度範圍</param>
             <returns></returns>
         </member>
     </members>

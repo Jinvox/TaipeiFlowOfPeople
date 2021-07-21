@@ -10,8 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TaipeiFlowOfPeopleModel;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-//celine test
+
 namespace TaipeiFlowOfPeople.Controllers
 {
     /// <summary>
@@ -22,27 +21,20 @@ namespace TaipeiFlowOfPeople.Controllers
     [ApiController]
     public class AttractionsController : ControllerBase
     {
-        private string dbPath { get; set; }
-        private string cnStr { get; set; }
-        private IConfiguration config;
+        private IConfiguration config { get; set; }
         public AttractionsController(IConfiguration configuration)
         {
-            dbPath = $"{AppDomain.CurrentDomain.BaseDirectory}SQLlite/db.sqlite";
-            cnStr = $"data source={dbPath}";
             config = configuration;
         }
-    
 
-    // GET: api/<AttractionsController>
-    /// <summary>
-    /// 取得所有景點人潮資料
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet]
+        /// <summary>
+        /// 取得所有景點人潮資料，最多200筆
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         public IEnumerable<Attraction> Get()
         {
             TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            Console.WriteLine($"Connect to {cnStr}");
             using (var context = new TaipeiFlowOfPeopleContext(config))
             {
                 var entities = context.Attraction.ToList();
@@ -50,40 +42,85 @@ namespace TaipeiFlowOfPeople.Controllers
             }
         }
 
-        // GET api/<AttractionsController>/5
         /// <summary>
-        /// 取得指定 id 的景點人朝資料
+        /// 取得指定編號的景點人朝資料
         /// </summary>
-        /// <param name="id">指定 id</param>
+        /// <param name="id">唯一識別編號</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         public Attraction Get(int id)
         {
             TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            Console.WriteLine($"Connect to {cnStr}");
             using (var context = new TaipeiFlowOfPeopleContext(config))
             {
-                var entity = context.Attraction.Where(x=>x.id == id).FirstOrDefault();
+                var entity = context.Attraction.Where(x => x.id == id).FirstOrDefault();
                 return entity;
             }
         }
 
-        //// POST api/<AttractionsController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        /// <summary>
+        /// 以名稱或行政區模糊搜索景點
+        /// </summary>
+        /// <param name="nameOrDistrict">名稱或行政區</param>
+        /// <returns></returns>
+        [HttpGet("byNameDistrict")]
+        public IEnumerable<Attraction> Get(string nameOrDistrict)
+        {
+            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
+            using (var context = new TaipeiFlowOfPeopleContext(config))
+            {
+                var entities = context.Attraction.Where(x=>x.name.Contains(nameOrDistrict) || x.district.Contains(nameOrDistrict)).Take(200).ToList();
+                return entities;
+            }
+        }
 
-        //// PUT api/<AttractionsController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        /// <summary>
+        /// 以名稱過濾景點
+        /// </summary>
+        /// <param name="name">名稱</param>
+        /// <returns></returns>
+        [HttpGet("byName")]
+        public IEnumerable<Attraction> GetByName(string name)
+        {
+            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
+            using (var context = new TaipeiFlowOfPeopleContext(config))
+            {
+                var entities = context.Attraction.Where(x => x.name == name).Take(200).ToList();
+                return entities;
+            }
+        }
 
-        //// DELETE api/<AttractionsController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        /// <summary>
+        /// 以行政區過濾景點
+        /// </summary>
+        /// <param name="district">行政區</param>
+        /// <returns></returns>
+        [HttpGet("byDistrict")]
+        public IEnumerable<Attraction> GetByDistrict(string district)
+        {
+            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
+            using (var context = new TaipeiFlowOfPeopleContext(config))
+            {
+                var entities = context.Attraction.Where(x => x.district == district).Take(200).ToList();
+                return entities;
+            }
+        }
+
+        /// <summary>
+        /// 以人潮等級過濾景點
+        /// </summary>
+        /// <param name="level">人潮等級</param>
+        /// <returns></returns>
+        [HttpGet("byLevel")]
+        public IEnumerable<Attraction> GetByLevel(int level)
+        {
+            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
+            using (var context = new TaipeiFlowOfPeopleContext(config))
+            {
+                var entities = context.Attraction.Where(x => x.level == level).Take(200).ToList();
+                return entities;
+            }
+        }
+
     }
 }

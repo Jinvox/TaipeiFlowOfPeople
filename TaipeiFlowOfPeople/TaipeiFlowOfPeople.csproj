@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SQLlite\**" />
+    <Content Remove="SQLlite\**" />
+    <EmbeddedResource Remove="SQLlite\**" />
+    <None Remove="SQLlite\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
@@ -21,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Model\" />
-    <Folder Include="SQLlite\" />
   </ItemGroup>
 
   <ItemGroup>
