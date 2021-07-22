@@ -141,5 +141,27 @@ namespace TaipeiFlowOfPeople.Controllers
             public int[] Levels { get; set; }
         }
 
+        ///// <summary>
+        ///// 取得 taken
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet("GetToken")]
+        //public ActionResult<string> GetToken()
+        //{
+        //    string token = jwt.GenerateToken("taipei");
+        //    return token;
+        //}
+
+        ///// <summary>
+        ///// 測試 JWT
+        ///// </summary>
+        ///// <returns></returns>
+        //[Authorize]
+        //[HttpGet("TestJWT")]
+        //public IEnumerable<Attraction> TestJWT()
+        //{
+        //    var entities = context.Attraction.Take(200).ToList();
+        //    return entities;
+        //}
     }
 }
