@@ -28,7 +28,7 @@ namespace TaipeiFlowOfPeople.Controllers
         }
 
         /// <summary>
-        /// 取得所有景點人潮資料，最多200筆
+        /// 取得所有景點人潮資料最多200筆
         /// </summary>
         /// <returns></returns>
         [HttpGet]
