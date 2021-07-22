@@ -111,35 +111,48 @@ namespace TaipeiFlowOfPeople.Controllers
         }
 
         /// <summary>
-        /// 以燈號+人潮等級過濾景點
+        /// 以行政區+人潮等級過濾景點
         /// </summary>
-        /// <param name="districtslevels">行政區+人潮等級</param>
+        /// <param name="districts">行政區</param>
+        /// <param name="levels">人潮等級</param>
         /// <returns></returns>
-        /// 
-        [HttpPost("byDistrictsLevels")]
-        public IEnumerable<Attraction> GetByDistrictsLevels(GetRequestParameters districtslevels)
+        [HttpGet("byDistrictsLevels")]
+        public IEnumerable<Attraction> GetByDistrictsLevels(string districts, string levels)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            //var districts = new List<string> { "文山區", "北投區" };
-            //var levels = new List<int> { 1 };
-            var districts = districtslevels.Districts.ToList();
-            var levels = districtslevels.Levels.ToList();
-            using (var context = new TaipeiFlowOfPeopleContext(config))
+            // 防呆
+            string[] ds = districts?.Split(",");
+            if (ds == null)
+                ds = new string[] { };
+            ds = ds.Select(x => x.Trim()).ToArray();
+
+            string[] templs = levels?.Split(",");
+            if (templs == null)
+                templs = new string[] { };
+            List<int?> ls = new List<int?>();
+            foreach(string templ in templs)
             {
-                var entities = context.Attraction.Where(x => levels.Contains((int)x.level) && districts.Contains((string)x.district)).Take(200).ToList();
-                return entities;
+                if(int.TryParse(templ, out int l))
+                {
+                    ls.Add(l);
+                }
             }
+
+            // 取數據
+            var entities = context.Attraction.Where(x => 
+                (!(ls.Count() > 0) || ls.Contains(x.level)) &&
+                (!(ds.Count() > 0) || ds.Contains(x.district)))
+                .Take(200).ToList();
+            return entities;
         }
 
-
-        [BindProperties]
-        public class GetRequestParameters
-        {
-            [BindProperty]
-            public string[] Districts { get; set; }
-            [BindProperty]
-            public int[] Levels { get; set; }
-        }
+        //[BindProperties]
+        //public class GetRequestParameters
+        //{
+        //    [BindProperty]
+        //    public string[] Districts { get; set; }
+        //    [BindProperty]
+        //    public int[] Levels { get; set; }
+        //}
 
         /// <summary>
         /// 取得 taken
