@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TaipeiFlowOfPeople.Helper;
 using TaipeiFlowOfPeopleModel;
 
 namespace TaipeiFlowOfPeople.Controllers
@@ -22,24 +24,25 @@ namespace TaipeiFlowOfPeople.Controllers
     public class AttractionsController : ControllerBase
     {
         private IConfiguration config { get; set; }
-        public AttractionsController(IConfiguration configuration)
+        private TaipeiFlowOfPeopleContext context { get; set; }
+        private JwtHelpers jwt { get; set; }
+        public AttractionsController(IConfiguration configuration, TaipeiFlowOfPeopleContext taipeiFlowOfPeopleContext, JwtHelpers jwt)
         {
-            config = configuration;
+            this.config = configuration;
+            this.context = taipeiFlowOfPeopleContext;
+            this.jwt = jwt;
         }
 
         /// <summary>
         /// 取得所有景點人潮資料最多200筆
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public IEnumerable<Attraction> Get()
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            using (var context = new TaipeiFlowOfPeopleContext(config))
-            {
-                var entities = context.Attraction.ToList();
-                return entities;
-            }
+            var entities = context.Attraction.Take(200).ToList();
+            return entities;
         }
 
         /// <summary>
@@ -47,15 +50,12 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="id">唯一識別編號</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{id}")]
         public Attraction Get(int id)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            using (var context = new TaipeiFlowOfPeopleContext(config))
-            {
-                var entity = context.Attraction.Where(x => x.id == id).FirstOrDefault();
-                return entity;
-            }
+            var entity = context.Attraction.Where(x => x.id == id).FirstOrDefault();
+            return entity;
         }
 
         /// <summary>
@@ -63,15 +63,12 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="nameOrDistrict">名稱或行政區</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byNameDistrict")]
         public IEnumerable<Attraction> Get(string nameOrDistrict)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            using (var context = new TaipeiFlowOfPeopleContext(config))
-            {
-                var entities = context.Attraction.Where(x=>x.name.Contains(nameOrDistrict) || x.district.Contains(nameOrDistrict)).Take(200).ToList();
-                return entities;
-            }
+            var entities = context.Attraction.Where(x=>x.name.Contains(nameOrDistrict) || x.district.Contains(nameOrDistrict)).Take(200).ToList();
+            return entities;
         }
 
         /// <summary>
@@ -79,15 +76,12 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="name">名稱</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byName")]
         public IEnumerable<Attraction> GetByName(string name)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            using (var context = new TaipeiFlowOfPeopleContext(config))
-            {
-                var entities = context.Attraction.Where(x => x.name == name).Take(200).ToList();
-                return entities;
-            }
+            var entities = context.Attraction.Where(x => x.name == name).Take(200).ToList();
+            return entities;
         }
 
         /// <summary>
@@ -95,15 +89,12 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="district">行政區</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byDistrict")]
         public IEnumerable<Attraction> GetByDistrict(string district)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            using (var context = new TaipeiFlowOfPeopleContext(config))
-            {
-                var entities = context.Attraction.Where(x => x.district == district).Take(200).ToList();
-                return entities;
-            }
+            var entities = context.Attraction.Where(x => x.district == district).Take(200).ToList();
+            return entities;
         }
 
         /// <summary>
@@ -111,15 +102,12 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="level">人潮等級</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byLevel")]
         public IEnumerable<Attraction> GetByLevel(int level)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
-            using (var context = new TaipeiFlowOfPeopleContext(config))
-            {
-                var entities = context.Attraction.Where(x => x.level == level).Take(200).ToList();
-                return entities;
-            }
+            var entities = context.Attraction.Where(x => x.level == level).Take(200).ToList();
+            return entities;
         }
 
         /// <summary>

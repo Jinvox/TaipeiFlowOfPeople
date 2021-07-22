@@ -17,9 +17,9 @@ namespace TaipeiFlowOfPeopleModel
         {
             string dbPath = config.GetSection("SQLiteFile").Value;
             string a = System.IO.Path.GetDirectoryName(dbPath);
-            if(!System.IO.File.Exists(dbPath))
+            if (!System.IO.File.Exists(dbPath))
             {
-                using(var context = new TaipeiFlowOfPeopleContext(config))
+                using (var context = new TaipeiFlowOfPeopleContext(config))
                 {
                     context.RefreshTable<Attraction>();
                     context.RefreshTable<BusStop>();
@@ -36,7 +36,7 @@ namespace TaipeiFlowOfPeopleModel
                 {
                     using (var context = new TaipeiFlowOfPeopleContext(config))
                     {
-                        if(tableName == nameof(Attraction))
+                        if (tableName == nameof(Attraction))
                             context.RefreshTable<Attraction>();
                         else if (tableName == nameof(BusStop))
                             context.RefreshTable<BusStop>();
@@ -68,7 +68,7 @@ namespace TaipeiFlowOfPeopleModel
             {
                 string json = CommunityHelper.Instance.GetJsonContent("https://travel.taipei/api/zh-tw/crowd/spots", false);
                 Spots entity = Newtonsoft.Json.JsonConvert.DeserializeObject<Spots>(json);
-                this.ClearTable<T>(config);
+                this.ClearTable<T>();
 
                 this.Set<Attraction>().AddRange(entity.data);
                 this.SaveChanges();
@@ -82,7 +82,7 @@ namespace TaipeiFlowOfPeopleModel
                     entity.StopName.Uid = entity.StopUID;
                     entity.StopPosition.Uid = entity.StopUID;
                 }
-                this.ClearTable<T>(config);
+                this.ClearTable<T>();
 
                 this.Set<BusStop>().AddRange(entities);
                 this.SaveChanges();
@@ -96,7 +96,7 @@ namespace TaipeiFlowOfPeopleModel
                     entity.StationName.Uid = entity.StationUID;
                     entity.StationPosition.Uid = entity.StationUID;
                 }
-                this.ClearTable<T>(config);
+                this.ClearTable<T>();
 
                 this.Set<MetroStation>().AddRange(entities);
                 this.SaveChanges();
@@ -107,7 +107,7 @@ namespace TaipeiFlowOfPeopleModel
                 YouBikeTP youBikeTP = Newtonsoft.Json.JsonConvert.DeserializeObject<YouBikeTP>(json);
                 foreach (YouBikeStation entity in youBikeTP.retVal)
                 {
-                    if(float.TryParse(entity.lat, out float lat))
+                    if (float.TryParse(entity.lat, out float lat))
                     {
                         entity.latPosition = lat;
                     }
@@ -116,7 +116,7 @@ namespace TaipeiFlowOfPeopleModel
                         entity.lngPosition = lng;
                     }
                 }
-                this.ClearTable<T>(config);
+                this.ClearTable<T>();
 
                 this.Set<YouBikeStation>().AddRange(youBikeTP.retVal);
                 this.SaveChanges();
@@ -141,7 +141,18 @@ namespace TaipeiFlowOfPeopleModel
                 {
                     System.IO.Directory.CreateDirectory(dbDir);
                 }
+                bool isExist = System.IO.File.Exists(dbPath);
+
                 this.Database.EnsureCreated();
+
+                if(!isExist)
+                {
+                    this.RefreshTable<Attraction>();
+                    this.RefreshTable<BusStop>();
+                    this.RefreshTable<MetroStation>();
+                    this.RefreshTable<YouBikeStation>();
+                }
+
                 isMigrated = true;
             }
         }
@@ -157,15 +168,41 @@ namespace TaipeiFlowOfPeopleModel
 
         #region method
 
-        public void ClearTable<T>(IConfiguration config)
+        public void ClearTable<T>()
         {
             string dbPath = config.GetSection("SQLiteFile").Value;
             string tableName = typeof(T).Name;
             this.Database.ExecuteSqlRaw($"DELETE FROM {tableName}");
-            //using (var cn = new SqliteConnection($"data source={dbPath}"))
-            //{
-            //    cn.Execute($"DELETE FROM {typeof(T).Name}");
-            //}
+        }
+
+        public void CheckAndInitial(string tableName)
+        {
+            string dbPath = config.GetSection("SQLiteFile").Value;
+            string a = System.IO.Path.GetDirectoryName(dbPath);
+            if (!System.IO.File.Exists(dbPath))
+            {
+                this.RefreshTable<Attraction>();
+                this.RefreshTable<BusStop>();
+                this.RefreshTable<MetroStation>();
+                this.RefreshTable<YouBikeStation>();
+                return;
+            }
+
+            using (var cn = new SqliteConnection($"data source={dbPath}"))
+            {
+                var table = cn.QueryFirstOrDefault($"SELECT * FROM sqlite_master WHERE type = 'table' and name = '{tableName}'");
+                if (table == null)
+                {
+                    if (tableName == nameof(Attraction))
+                        this.RefreshTable<Attraction>();
+                    else if (tableName == nameof(BusStop))
+                        this.RefreshTable<BusStop>();
+                    else if (tableName == nameof(MetroStation))
+                        this.RefreshTable<MetroStation>();
+                    else if (tableName == nameof(YouBikeStation))
+                        this.RefreshTable<YouBikeStation>();
+                }
+            }
         }
         #endregion
     }

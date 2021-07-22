@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -25,24 +26,24 @@ namespace TaipeiFlowOfPeople.Controllers
     public class BusStopsController : ControllerBase
     {
         private IConfiguration config { get; set; }
-        public BusStopsController(IConfiguration configuration)
+        private TaipeiFlowOfPeopleContext context { get; set; }
+        public BusStopsController(IConfiguration configuration, TaipeiFlowOfPeopleContext taipeiFlowOfPeopleContext)
         {
             config = configuration;
+            context = taipeiFlowOfPeopleContext;
         }
 
         /// <summary>
         /// 取得前200筆公車站牌資料
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public IEnumerable<BusStop> Get()
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(BusStop));
-            using(var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                List<BusStop> busStops = cn.BusStop.OrderBy(x => x.StopUID).Take(200).ToList();
-                List<StopName> stopNames = cn.StopName.OrderBy(x=>x.Uid).Take(200).ToList();
-                List<StopPosition> stopPositions = cn.StopPosition.OrderBy(x => x.Uid).Take(200).ToList();
+                List<BusStop> busStops = context.BusStop.OrderBy(x => x.StopUID).Take(200).ToList();
+                List<StopName> stopNames = context.StopName.OrderBy(x=>x.Uid).Take(200).ToList();
+                List<StopPosition> stopPositions = context.StopPosition.OrderBy(x => x.Uid).Take(200).ToList();
                 foreach(BusStop stop in busStops)
                 {
                     StopName stopName = stopNames.FirstOrDefault(x => x.Uid == stop.StopUID);
@@ -51,7 +52,6 @@ namespace TaipeiFlowOfPeople.Controllers
                     stop.StopPosition = stopPosition;
                 }
                 return busStops;
-            }
         }
 
         /// <summary>
@@ -59,19 +59,16 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="stopUID">唯一識別碼</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{stopUID}")]
         public BusStop Get(string stopUID)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(BusStop));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                BusStop entity = cn.BusStop.FirstOrDefault(x => x.StopUID == stopUID);
-                StopName stopName = cn.StopName.FirstOrDefault(x => x.Uid == stopUID);
-                StopPosition stopPosition = cn.StopPosition.FirstOrDefault(x => x.Uid == stopUID);
-                entity.StopName = stopName;
-                entity.StopPosition = stopPosition;
-                return entity;
-            }
+            BusStop entity = context.BusStop.FirstOrDefault(x => x.StopUID == stopUID);
+            StopName stopName = context.StopName.FirstOrDefault(x => x.Uid == stopUID);
+            StopPosition stopPosition = context.StopPosition.FirstOrDefault(x => x.Uid == stopUID);
+            entity.StopName = stopName;
+            entity.StopPosition = stopPosition;
+            return entity;
         }
 
         /// <summary>
@@ -82,24 +79,22 @@ namespace TaipeiFlowOfPeople.Controllers
         /// <param name="rangeLon">經度範圍</param>
         /// <param name="rangeLat">緯度範圍</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byPosition")]
         public IEnumerable<BusStop> Get(float? positionLon, float? positionLat, float? rangeLon, float? rangeLat)
         {
             if (positionLon == null || positionLat == null)
                 return new List<BusStop>();
 
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(BusStop));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                var tempStopPositions = cn.StopPosition.Where(x =>
+                var tempStopPositions = context.StopPosition.Where(x =>
                 x.PositionLon >= (positionLon.Value - rangeLon ?? 0.001f) &&
                 x.PositionLon <= (positionLon.Value + rangeLon ?? 0.001f) &&
                 x.PositionLat >= (positionLat.Value - rangeLat ?? 0.001f) &&
                 x.PositionLat <= (positionLat.Value + rangeLat ?? 0.001f)
                 ).OrderBy(x => x.Uid).Take(200);
                 List<StopPosition> stopPositions = tempStopPositions.ToList();
-                List<BusStop> busStops = cn.BusStop.Join(tempStopPositions, x => x.StopUID, y => y.Uid, (x, y) => x).ToList();
-                List<StopName> stopNames = cn.StopName.Join(tempStopPositions, x => x.Uid, y => y.Uid, (x, y) => x).ToList();
+                List<BusStop> busStops = context.BusStop.Join(tempStopPositions, x => x.StopUID, y => y.Uid, (x, y) => x).ToList();
+                List<StopName> stopNames = context.StopName.Join(tempStopPositions, x => x.Uid, y => y.Uid, (x, y) => x).ToList();
                 
                 foreach(BusStop busStop in busStops)
                 { 
@@ -109,7 +104,6 @@ namespace TaipeiFlowOfPeople.Controllers
                     busStop.StopPosition = stopPosition;
                 }
                 return busStops;
-            }
         }
     }
 }

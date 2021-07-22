@@ -11,7 +11,7 @@
         </member>
         <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.Get">
             <summary>
-            取得所有景點人潮資料，最多200筆
+            取得所有景點人潮資料最多200筆
             </summary>
             <returns></returns>
         </member>

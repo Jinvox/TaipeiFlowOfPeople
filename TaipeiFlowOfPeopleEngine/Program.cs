@@ -21,6 +21,7 @@ namespace TaipeiFlowOfPeopleEngine
                 {
                     services.AddHostedService<Worker>();
                     services.AddHostedService<AttractionUpdate>();
+                    services.AddDbContext<TaipeiFlowOfPeopleModel.TaipeiFlowOfPeopleContext>();
                 });
 
     }

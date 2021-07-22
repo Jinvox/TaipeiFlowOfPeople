@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,33 +24,32 @@ namespace TaipeiFlowOfPeople.Controllers
     public class MetroStationController : ControllerBase
     {
         private IConfiguration config { get; set; }
-        public MetroStationController(IConfiguration configuration)
+        private TaipeiFlowOfPeopleContext context { get; set; }
+        public MetroStationController(IConfiguration configuration, TaipeiFlowOfPeopleContext taipeiFlowOfPeopleContext)
         {
             config = configuration;
+            context = taipeiFlowOfPeopleContext;
         }
 
         /// <summary>
         /// 取得前两百比捷运站资料
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public IEnumerable<MetroStation> Get()
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(MetroStation));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
+            List<MetroStation> metroStations = context.MetroStation.OrderBy(x => x.StationUID).Take(200).ToList();
+            List<StationName> stopNames = context.StationName.OrderBy(x => x.Uid).Take(200).ToList();
+            List<StationPosition> stopPositions = context.StationPosition.OrderBy(x => x.Uid).Take(200).ToList();
+            foreach (MetroStation stop in metroStations)
             {
-                List<MetroStation> metroStations = cn.MetroStation.OrderBy(x => x.StationUID).Take(200).ToList();
-                List<StationName> stopNames = cn.StationName.OrderBy(x => x.Uid).Take(200).ToList();
-                List<StationPosition> stopPositions = cn.StationPosition.OrderBy(x => x.Uid).Take(200).ToList();
-                foreach (MetroStation stop in metroStations)
-                {
-                    StationName stopName = stopNames.FirstOrDefault(x => x.Uid == stop.StationUID);
-                    stop.StationName = stopName;
-                    StationPosition stopPosition = stopPositions.FirstOrDefault(x => x.Uid == stop.StationUID);
-                    stop.StationPosition = stopPosition;
-                }
-                return metroStations;
+                StationName stopName = stopNames.FirstOrDefault(x => x.Uid == stop.StationUID);
+                stop.StationName = stopName;
+                StationPosition stopPosition = stopPositions.FirstOrDefault(x => x.Uid == stop.StationUID);
+                stop.StationPosition = stopPosition;
             }
+            return metroStations;
         }
 
         /// <summary>
@@ -57,19 +57,16 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="stationUID">唯一識別碼</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{stationUID}")]
         public MetroStation Get(string stationUID)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(MetroStation));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                MetroStation entity = cn.MetroStation.FirstOrDefault(x => x.StationUID == stationUID);
-                StationName name = cn.StationName.FirstOrDefault(x => x.Uid == stationUID);
-                StationPosition position = cn.StationPosition.FirstOrDefault(x => x.Uid == stationUID);
-                entity.StationName = name;
-                entity.StationPosition = position;
-                return entity;
-            }
+            MetroStation entity = context.MetroStation.FirstOrDefault(x => x.StationUID == stationUID);
+            StationName name = context.StationName.FirstOrDefault(x => x.Uid == stationUID);
+            StationPosition position = context.StationPosition.FirstOrDefault(x => x.Uid == stationUID);
+            entity.StationName = name;
+            entity.StationPosition = position;
+            return entity;
         }
 
         /// <summary>
@@ -80,34 +77,31 @@ namespace TaipeiFlowOfPeople.Controllers
         /// <param name="rangeLon">經度範圍</param>
         /// <param name="rangeLat">緯度範圍</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byPosition")]
         public IEnumerable<MetroStation> Get(float? positionLon, float? positionLat, float? rangeLon, float? rangeLat)
         {
             if (positionLon == null || positionLat == null)
                 return new List<MetroStation>();
 
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(MetroStation));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                var tempStationPositions = cn.StationPosition.Where(x =>
-                x.PositionLon >= (positionLon.Value - rangeLon ?? 0.001f) &&
-                x.PositionLon <= (positionLon.Value + rangeLon ?? 0.001f) &&
-                x.PositionLat >= (positionLat.Value - rangeLat ?? 0.001f) &&
-                x.PositionLat <= (positionLat.Value + rangeLat ?? 0.001f)
-                ).OrderBy(x => x.Uid).Take(200);
-                List<StationPosition> stationPositions = tempStationPositions.ToList();
-                List<MetroStation> MetroStations = cn.MetroStation.Join(tempStationPositions, x => x.StationUID, y => y.Uid, (x, y) => x).ToList();
-                List<StationName> stationNames = cn.StationName.Join(tempStationPositions, x => x.Uid, y => y.Uid, (x, y) => x).ToList();
+            var tempStationPositions = context.StationPosition.Where(x =>
+            x.PositionLon >= (positionLon.Value - rangeLon ?? 0.001f) &&
+            x.PositionLon <= (positionLon.Value + rangeLon ?? 0.001f) &&
+            x.PositionLat >= (positionLat.Value - rangeLat ?? 0.001f) &&
+            x.PositionLat <= (positionLat.Value + rangeLat ?? 0.001f)
+            ).OrderBy(x => x.Uid).Take(200);
+            List<StationPosition> stationPositions = tempStationPositions.ToList();
+            List<MetroStation> MetroStations = context.MetroStation.Join(tempStationPositions, x => x.StationUID, y => y.Uid, (x, y) => x).ToList();
+            List<StationName> stationNames = context.StationName.Join(tempStationPositions, x => x.Uid, y => y.Uid, (x, y) => x).ToList();
 
-                foreach (MetroStation busStop in MetroStations)
-                {
-                    StationName stopName = stationNames.FirstOrDefault(x => x.Uid == busStop.StationUID);
-                    busStop.StationName = stopName;
-                    StationPosition stopPosition = stationPositions.FirstOrDefault(x => x.Uid == busStop.StationUID);
-                    busStop.StationPosition = stopPosition;
-                }
-                return MetroStations;
+            foreach (MetroStation busStop in MetroStations)
+            {
+                StationName stopName = stationNames.FirstOrDefault(x => x.Uid == busStop.StationUID);
+                busStop.StationName = stopName;
+                StationPosition stopPosition = stationPositions.FirstOrDefault(x => x.Uid == busStop.StationUID);
+                busStop.StationPosition = stopPosition;
             }
+            return MetroStations;
         }
     }
 }

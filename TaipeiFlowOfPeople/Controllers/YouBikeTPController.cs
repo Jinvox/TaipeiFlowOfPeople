@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,24 +21,23 @@ namespace TaipeiFlowOfPeople.Controllers
     public class YouBikeTPController : ControllerBase
     {
         private IConfiguration config { get; set; }
-        public YouBikeTPController(IConfiguration configuration)
+        private TaipeiFlowOfPeopleContext context { get; set; }
+        public YouBikeTPController(IConfiguration configuration, TaipeiFlowOfPeopleContext taipeiFlowOfPeopleContext)
         {
             config = configuration;
+            context = taipeiFlowOfPeopleContext;
         }
-      
+
         /// <summary>
         /// 取得所有 YouBike 站點，最多200筆
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public IEnumerable<YouBikeStation> Get()
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(YouBikeStation));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                List<YouBikeStation> busStops = cn.YouBikeStation.OrderBy(x => x.sno).Take(200).ToList();
-                return busStops;
-            }
+            List<YouBikeStation> busStops = context.YouBikeStation.OrderBy(x => x.sno).Take(200).ToList();
+            return busStops;
         }
 
         /// <summary>
@@ -45,15 +45,12 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="sno">唯一識別碼</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{sno}")]
         public YouBikeStation Get(string sno)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(YouBikeStation));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                YouBikeStation entity = cn.YouBikeStation.FirstOrDefault(x => x.sno == sno);
-                return entity;
-            }
+            YouBikeStation entity = context.YouBikeStation.FirstOrDefault(x => x.sno == sno);
+            return entity;
         }
 
         /// <summary>
@@ -64,20 +61,17 @@ namespace TaipeiFlowOfPeople.Controllers
         /// <param name="rangeLng">經度範圍</param>
         /// <param name="rangeLat">緯度範圍</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("byPosition")]
         public IEnumerable<YouBikeStation> GetByPosition(float? positionLng, float? positionLat, float? rangeLng, float? rangeLat)
         {
-            TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(YouBikeStation));
-            using (var cn = new TaipeiFlowOfPeopleContext(config))
-            {
-                List<YouBikeStation> youBikeStations = cn.YouBikeStation.Where(x =>
-        x.lngPosition >= (positionLng.Value - rangeLng ?? 0.001f) &&
-        x.lngPosition <= (positionLng.Value + rangeLng ?? 0.001f) &&
-        x.latPosition >= (positionLat.Value - rangeLat ?? 0.001f) &&
-        x.latPosition <= (positionLat.Value + rangeLat ?? 0.001f)
-        ).OrderBy(x => x.sno).Take(200).ToList(); 
-                return youBikeStations;
-            }
+            List<YouBikeStation> youBikeStations = context.YouBikeStation.Where(x =>
+                        x.lngPosition >= (positionLng.Value - rangeLng ?? 0.001f) &&
+                        x.lngPosition <= (positionLng.Value + rangeLng ?? 0.001f) &&
+                        x.latPosition >= (positionLat.Value - rangeLat ?? 0.001f) &&
+                        x.latPosition <= (positionLat.Value + rangeLat ?? 0.001f)
+                        ).OrderBy(x => x.sno).Take(200).ToList();
+            return youBikeStations;
         }
     }
 }
