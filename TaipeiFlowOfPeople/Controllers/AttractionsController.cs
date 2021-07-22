@@ -159,7 +159,7 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetToken")]
-        public ActionResult<string> GetToken()
+        public string GetToken()
         {
             string token = jwt.GenerateToken("taipei");
             return token;
