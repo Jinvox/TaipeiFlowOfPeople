@@ -25,16 +25,6 @@ namespace TaipeiFlowOfPeopleEngine
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                string sqlitePath = _config.GetSection("SQLiteFile").Value;
-                if (!File.Exists(sqlitePath))
-                {
-                    _logger.LogInformation($"File is not exist : {sqlitePath}");
-                }
-                else
-                {
-                    
-                }
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await Task.Delay(86400000, stoppingToken); // 24 ¤p®É
             }
         }

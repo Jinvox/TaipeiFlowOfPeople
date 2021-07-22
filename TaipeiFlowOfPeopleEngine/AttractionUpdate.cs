@@ -37,19 +37,5 @@ namespace TaipeiFlowOfPeopleEngine
                 await Task.Delay(900000, stoppingToken); // 15 分鐘更新一次
             }
         }
-
-        private string GetJsonContent(string Url)
-        {
-            string targetURI = Url;
-            var request = System.Net.WebRequest.Create(targetURI);
-            request.ContentType = "application/json; charset=utf-8";
-            var response = request.GetResponse();
-            string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
-            }
-            return text;
-        }
     }
 }
