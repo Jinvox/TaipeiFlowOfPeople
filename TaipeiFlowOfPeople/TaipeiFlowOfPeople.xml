@@ -50,6 +50,20 @@
             <param name="level">人潮等級</param>
             <returns></returns>
         </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetByDistrictsLevels(TaipeiFlowOfPeople.Controllers.AttractionsController.GetRequestParameters)">
+            <summary>
+            以燈號+人潮等級過濾景點
+            </summary>
+            <param name="districtslevels">行政區+人潮等級</param>
+            <returns></returns>
+            
+        </member>
+        <member name="M:TaipeiFlowOfPeople.Controllers.AttractionsController.GetToken">
+            <summary>
+            取得 taken
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:TaipeiFlowOfPeople.Controllers.BusStopsController">
             <summary>
             公車站
