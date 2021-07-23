@@ -21,6 +21,7 @@ namespace TaipeiFlowOfPeople.Controllers
     /// 公車站
     /// </summary>
     [EnableCors("Policy1")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BusStopsController : ControllerBase
@@ -37,7 +38,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// 取得前200筆公車站牌資料
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         [HttpGet]
         public IEnumerable<BusStop> Get()
         {
@@ -59,7 +59,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="stopUID">唯一識別碼</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("{stopUID}")]
         public BusStop Get(string stopUID)
         {
@@ -79,7 +78,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// <param name="rangeLon">經度範圍</param>
         /// <param name="rangeLat">緯度範圍</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byPosition")]
         public IEnumerable<BusStop> Get(float? positionLon, float? positionLat, float? rangeLon, float? rangeLat)
         {

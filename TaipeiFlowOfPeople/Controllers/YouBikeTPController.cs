@@ -16,6 +16,7 @@ using TaipeiFlowOfPeopleModel;
 namespace TaipeiFlowOfPeople.Controllers
 {
     [EnableCors("Policy1")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class YouBikeTPController : ControllerBase
@@ -32,7 +33,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// 取得所有 YouBike 站點，最多200筆
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         [HttpGet]
         public IEnumerable<YouBikeStation> Get()
         {
@@ -45,7 +45,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="sno">唯一識別碼</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("{sno}")]
         public YouBikeStation Get(string sno)
         {
@@ -61,7 +60,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// <param name="rangeLng">經度範圍</param>
         /// <param name="rangeLat">緯度範圍</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byPosition")]
         public IEnumerable<YouBikeStation> GetByPosition(float? positionLng, float? positionLat, float? rangeLng, float? rangeLat)
         {

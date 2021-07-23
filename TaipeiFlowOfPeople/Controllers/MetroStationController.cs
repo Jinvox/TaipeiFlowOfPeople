@@ -19,6 +19,7 @@ namespace TaipeiFlowOfPeople.Controllers
     /// 捷运站
     /// </summary>
     [EnableCors("Policy1")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MetroStationController : ControllerBase
@@ -35,7 +36,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// 取得前两百比捷运站资料
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         [HttpGet]
         public IEnumerable<MetroStation> Get()
         {
@@ -57,7 +57,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="stationUID">唯一識別碼</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("{stationUID}")]
         public MetroStation Get(string stationUID)
         {
@@ -77,7 +76,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// <param name="rangeLon">經度範圍</param>
         /// <param name="rangeLat">緯度範圍</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byPosition")]
         public IEnumerable<MetroStation> Get(float? positionLon, float? positionLat, float? rangeLon, float? rangeLat)
         {

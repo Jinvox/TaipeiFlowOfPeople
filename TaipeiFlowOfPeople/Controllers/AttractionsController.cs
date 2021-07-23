@@ -18,6 +18,7 @@ namespace TaipeiFlowOfPeople.Controllers
     /// <summary>
     /// 景點人潮
     /// </summary>
+    [Authorize]
     [EnableCors("Policy1")]
     [Route("api/[controller]")]
     [ApiController]
@@ -37,7 +38,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// 取得所有景點人潮資料最多200筆
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         [HttpGet]
         public IEnumerable<Attraction> Get()
         {
@@ -50,7 +50,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="id">唯一識別編號</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("{id}")]
         public Attraction Get(int id)
         {
@@ -63,7 +62,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="nameOrDistrict">名稱或行政區</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byNameDistrict")]
         public IEnumerable<Attraction> Get(string nameOrDistrict)
         {
@@ -76,7 +74,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="name">名稱</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byName")]
         public IEnumerable<Attraction> GetByName(string name)
         {
@@ -89,7 +86,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="district">行政區</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byDistrict")]
         public IEnumerable<Attraction> GetByDistrict(string district)
         {
@@ -102,7 +98,6 @@ namespace TaipeiFlowOfPeople.Controllers
         /// </summary>
         /// <param name="level">人潮等級</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("byLevel")]
         public IEnumerable<Attraction> GetByLevel(int level)
         {
@@ -158,6 +153,7 @@ namespace TaipeiFlowOfPeople.Controllers
         /// 取得 taken
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetToken")]
         public string GetToken()
         {
