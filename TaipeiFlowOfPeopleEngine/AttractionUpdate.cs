@@ -28,7 +28,6 @@ namespace TaipeiFlowOfPeopleEngine
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                TaipeiFlowOfPeopleContext.CheckAndInitial(config, nameof(Attraction));
                 using(var cn =new TaipeiFlowOfPeopleContext(config))
                 {
                     cn.RefreshTable<Attraction>();

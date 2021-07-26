@@ -21,6 +21,7 @@ namespace TaipeiFlowOfPeopleModel
             {
                 using (var context = new TaipeiFlowOfPeopleContext(config))
                 {
+                    context.RefreshTable<AttractionAddress>();
                     context.RefreshTable<Attraction>();
                     context.RefreshTable<BusStop>();
                     context.RefreshTable<MetroStation>();
@@ -51,6 +52,7 @@ namespace TaipeiFlowOfPeopleModel
         #endregion
 
         #region Database (Busingee Logic)
+        public DbSet<AttractionAddress> AttractionAddress { get; set; }
         public DbSet<Attraction> Attraction { get; set; }
         public DbSet<BusStop> BusStop { get; set; }
         public DbSet<StopName> StopName { get; set; }
@@ -70,7 +72,35 @@ namespace TaipeiFlowOfPeopleModel
                 Spots entity = Newtonsoft.Json.JsonConvert.DeserializeObject<Spots>(json);
                 this.ClearTable<T>();
 
+                // 補上地址
+                List<AttractionAddress> addresses = this.Set<AttractionAddress>().ToList();
+                foreach (Attraction attriction in entity.data)
+                {
+                    attriction.address = addresses.FirstOrDefault(x => x.name == attriction.name?.Split('(').FirstOrDefault())?.address;
+                }
+
                 this.Set<Attraction>().AddRange(entity.data);
+                this.SaveChanges();
+            }
+            else if (typeof(AttractionAddress).IsAssignableFrom(typeof(T)))
+            {
+                List<AttractionAddress> entities = new List<AttractionAddress>();
+                entities.Add(new AttractionAddress("貓空", "臺北市文山區新光路二段8號"));
+                entities.Add(new AttractionAddress("西門町商圈", "台北市萬華區成都路1號"));
+                entities.Add(new AttractionAddress("士林官邸公園", "台北市士林區福林路60號"));
+                entities.Add(new AttractionAddress("士林觀光夜市", "台北市士林區基河路101號"));
+                entities.Add(new AttractionAddress("信義商圈", "台北市信義區松壽路9號"));
+                entities.Add(new AttractionAddress("白石湖", "臺北市內湖區碧山路38號"));
+                entities.Add(new AttractionAddress("竹子湖", "台北市北投區竹子湖52號"));
+                entities.Add(new AttractionAddress("中正紀念堂", "台北市中正區中山南路21號"));
+                entities.Add(new AttractionAddress("華山文創園區", "台北市中正區八德路一段1號"));
+                entities.Add(new AttractionAddress("松山文創園區", "台北市信義區光復南路133號"));
+                entities.Add(new AttractionAddress("陽明公園", "台北市北投區湖山路二段26號"));
+
+                List<AttractionAddress> existedEntities = this.AttractionAddress.ToList();
+                List<AttractionAddress> addedEntities = entities.Where(x => !existedEntities.Exists(y => y.name == x.name)).ToList();
+
+                this.Set<AttractionAddress>().AddRange(addedEntities);
                 this.SaveChanges();
             }
             else if (typeof(BusStop).IsAssignableFrom(typeof(T)))
@@ -147,6 +177,7 @@ namespace TaipeiFlowOfPeopleModel
 
                 if(!isExist)
                 {
+                    this.RefreshTable<AttractionAddress>();
                     this.RefreshTable<Attraction>();
                     this.RefreshTable<BusStop>();
                     this.RefreshTable<MetroStation>();

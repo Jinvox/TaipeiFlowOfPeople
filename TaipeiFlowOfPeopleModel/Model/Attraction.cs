@@ -27,6 +27,9 @@ namespace TaipeiFlowOfPeopleModel
 
         [MaxLength(50)]
         public string update_time { get; set; }
+
+        [MaxLength(500)]
+        public string address { get; set; }
     }
 
 }
